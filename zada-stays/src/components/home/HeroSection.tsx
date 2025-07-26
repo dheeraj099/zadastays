@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 
 const HeroSection = () => {
@@ -24,9 +25,11 @@ const HeroSection = () => {
           Discover premium apartments with Zada Stays - your trusted partner in
           finding the ideal living space
         </p>
-        <button className="!mt-3  bg-gray-800 hover:bg-gray-700 text-white font-semibold  !px-4 !py-2 rounded-lg transition-colors text-xl border border-gray-600">
-          View Apartments
-        </button>
+        <Link href="/apartments">
+          <button className="!mt-3  bg-gray-800 hover:bg-gray-700 text-white font-semibold  !px-4 !py-2 rounded-lg transition-colors text-xl border border-gray-600">
+            View Apartments
+          </button>
+        </Link>
       </div>
     </section>
   );
