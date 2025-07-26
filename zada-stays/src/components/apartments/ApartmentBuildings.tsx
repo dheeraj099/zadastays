@@ -33,14 +33,14 @@ const ApartmentBuildings = () => {
   ];
 
   return (
-    <section className="py-16 px-6 lg:px-8 bg-gray-50">
-      <div className="max-w-7xl mx-auto">
+    <section className="!py-16 !px-6 lg:!px-8 bg-gray-50 flex flex-col items-center justify-center">
+      <div className="max-w-7xl mx-auto flex flex-col">
         {/* Section Header */}
-        <div className="text-center mb-16">
-          <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+        <div className="text-center !mb-16 flex flex-col ">
+          <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 !mb-4">
             Our Apartment Buildings
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-600 max-w-2xl !mx-auto">
             Choose from our premium collection of apartment buildings in prime locations
           </p>
         </div>
@@ -50,7 +50,7 @@ const ApartmentBuildings = () => {
           {apartments.map((apartment) => (
             <div
               key={apartment.id}
-              className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
+              className="flex flex-col bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
             >
               {/* Apartment Image */}
               <div className="relative h-64 overflow-hidden">
@@ -62,19 +62,19 @@ const ApartmentBuildings = () => {
               </div>
 
               {/* Apartment Content */}
-              <div className="p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-2">
+              <div className="!p-6 flex flex-col h-max flex-1">
+                <h3 className="text-xl font-bold text-gray-900 !mb-2">
                   {apartment.name}
                 </h3>
-                <p className="text-gray-600 mb-3 font-medium">
+                <p className="text-gray-600 !mb-3 font-medium">
                   {apartment.location}
                 </p>
-                <p className="text-gray-700 mb-6 leading-relaxed">
+                <p className="text-gray-700 !mb-6 leading-relaxed">
                   {apartment.description}
                 </p>
                 
                 {/* View Details Button */}
-                <button className="w-full bg-gray-800 hover:bg-gray-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200">
+                <button className="w-full bg-gray-800 hover:bg-gray-700 text-white font-semibold !py-3 !px-4 rounded-lg transition-colors duration-200 ">
                   View Details
                 </button>
               </div>
