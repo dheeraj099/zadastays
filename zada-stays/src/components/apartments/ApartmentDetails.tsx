@@ -122,9 +122,12 @@ const ApartmentDetails = ({ apartmentName }: ApartmentDetailsProps) => {
                 </div>
 
                 {/* View Details Button */}
-                <button className="w-full bg-gray-800 hover:bg-gray-700 text-white font-semibold !py-3 !px-4 rounded-lg transition-colors duration-200">
+                <Link 
+                  href={`/apartments/${apartmentName}/enquiry`}
+                  className="block w-full bg-gray-800 hover:bg-gray-700 text-white font-semibold !py-3 !px-4 rounded-lg transition-colors duration-200 text-center"
+                >
                   View Details
-                </button>
+                </Link>
               </div>
             </div>
           ))}
