@@ -8,7 +8,7 @@ const NavBar = () => {
       <div className="flex items-center justify-center gap-3">
         <Link href="/" className="text-sm font-medium hover:text-gray-600 transition-colors">Home</Link>
         <Link href="/apartments" className="text-sm font-medium hover:text-gray-600 transition-colors">Apartments</Link>
-        <span className="text-sm font-medium hover:text-gray-600 transition-colors cursor-pointer">Contact us</span>
+        <Link href="/contact" className="text-sm font-medium hover:text-gray-600 transition-colors">Contact us</Link>
       </div>
     </div>
   );
