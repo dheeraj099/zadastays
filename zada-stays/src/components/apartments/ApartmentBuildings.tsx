@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 
 const ApartmentBuildings = () => {
   const apartments = [
@@ -74,9 +75,14 @@ const ApartmentBuildings = () => {
                 </p>
                 
                 {/* View Details Button */}
-                <button className="w-full bg-gray-800 hover:bg-gray-700 text-white font-semibold !py-3 !px-4 rounded-lg transition-colors duration-200 ">
-                  View Details
-                </button>
+                <Link 
+                  href={`/apartments/${apartment.name.toLowerCase().replace(/\s+/g, '-')}`}
+                  className="block w-full"
+                >
+                  <button className="w-full bg-gray-800 hover:bg-gray-700 text-white font-semibold !py-3 !px-4 rounded-lg transition-colors duration-200 ">
+                    View Details
+                  </button>
+                </Link>
               </div>
             </div>
           ))}
