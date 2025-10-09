@@ -9,7 +9,7 @@ const Benifits = () => {
               Why Choose Zada Stays?
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl !mx-auto !mt-2 leading-relaxed">
-              We're committed to providing exceptional service and premium
+              We&apos;re committed to providing exceptional service and premium
               living experiences
             </p>
           </div>

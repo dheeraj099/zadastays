@@ -9,7 +9,7 @@ const Testimonials = () => {
               What Our Customers Say
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed !mt-2">
-              Don't just take our word for it - hear from our satisfied
+              Don&apos;t just take our word for it - hear from our satisfied
               customers
             </p>
           </div>
@@ -26,8 +26,8 @@ const Testimonials = () => {
                 </div>
               </div>
               <p className="text-gray-600 italic leading-relaxed text-lg !mt-2">
-                "Zada Stays helped me find the perfect apartment in just a week.
-                The process was smooth and the team was incredibly helpful!"
+                &quot;Zada Stays helped me find the perfect apartment in just a week.
+                The process was smooth and the team was incredibly helpful!&quot;
               </p>
             </div>
 
@@ -42,8 +42,8 @@ const Testimonials = () => {
                 </div>
               </div>
               <p className="text-gray-600 italic leading-relaxed text-lg !mt-2">
-                "The quality of apartments and the level of service exceeded my
-                expectations. Highly recommend!"
+                &quot;The quality of apartments and the level of service exceeded my
+                expectations. Highly recommend!&quot;
               </p>
             </div>
 
@@ -58,8 +58,8 @@ const Testimonials = () => {
                 </div>
               </div>
               <p className="text-gray-600 italic leading-relaxed text-lg !mt-2">
-                "Professional, reliable, and truly care about their customers.
-                Found my dream home through Zada Stays!"
+                &quot;Professional, reliable, and truly care about their customers.
+                Found my dream home through Zada Stays!&quot;
               </p>
             </div>
           </div>
