@@ -53,27 +53,16 @@ const ApartmentDetails = ({ apartmentName }: ApartmentDetailsProps) => {
   ];
 
   return (
-    <section className="!py-16 !px-6 lg:!px-8 bg-white">
-      <div className="max-w-7xl mx-auto">
-        {/* Back to Apartments Link */}
-        <div className="!mb-8">
-          <Link 
-            href="/apartments" 
-            className="inline-flex items-center text-gray-600 hover:text-gray-800 transition-colors"
-          >
-            <svg className="w-4 h-4 !mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-            Back to Apartments
-          </Link>
-        </div>
+    <section className="!py-16 !px-6 lg:!px-8 bg-white flex flex-col  items-center justify-center">
+      <div className="max-w-7xl mx-auto flex flex-col">
+        
 
         {/* Header Section */}
-        <div className="text-center !mb-16">
+        <div className="text-center !mb-16  flex flex-col items-center justify-center">
           <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 !mb-4">
             Available Room Types
           </h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto text-center">
             Choose the perfect room type that fits your lifestyle and budget
           </p>
         </div>
