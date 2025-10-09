@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React from "react";
 
 const NavBar = () => {
@@ -5,10 +6,9 @@ const NavBar = () => {
     <div className="flex items-center !py-3 !px-40 bg-white  justify-between">
       <p className=" text-sm font-medium">Zada stays</p>
       <div className="flex items-center justify-center gap-3">
-        <span className="text-sm font-medium">Home</span>
-        <span className="text-sm font-medium">Apartments</span>
-        <span className="text-sm font-medium">Contact us</span>
-
+        <Link href="/" className="text-sm font-medium hover:text-gray-600 transition-colors">Home</Link>
+        <Link href="/apartments" className="text-sm font-medium hover:text-gray-600 transition-colors">Apartments</Link>
+        <Link href="/contact" className="text-sm font-medium hover:text-gray-600 transition-colors">Contact us</Link>
       </div>
     </div>
   );
