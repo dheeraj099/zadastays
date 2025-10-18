@@ -183,6 +183,15 @@ const AboutPage = () => {
             <p className="!text-xl !text-gray-600 !max-w-3xl !mx-auto !mb-8 !leading-relaxed">
               📞 Call or WhatsApp us today to explore our available properties and make your booking with ease.
             </p>
+            
+            {/* Company Policies Link */}
+            <div className="!mb-8">
+              <Link href="/company-policies" target="_blank" rel="noopener noreferrer">
+                <span className="!text-lg !font-semibold !text-blue-600 hover:!text-blue-800 !underline !cursor-pointer !transition-colors">
+                  📋 COMPANY POLICIES
+                </span>
+              </Link>
+            </div>
           </div>
 
           <div className="!flex !flex-col sm:!flex-row !gap-4 !justify-center !items-center">
