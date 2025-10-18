@@ -9,8 +9,7 @@ const Benifits = () => {
               Why Choose Zada Stays?
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl !mx-auto !mt-2 leading-relaxed">
-              We&apos;re committed to providing exceptional service and premium
-              living experiences
+              Because at Zada Stays, it’s not just a stay — it’s your home away from home.
             </p>
           </div>
 
@@ -43,7 +42,7 @@ const Benifits = () => {
             <div className="bg-white !p-8 rounded-lg shadow-lg text-center border border-gray-100">
               <div className="text-4xl mb-6">🎧</div>
               <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                24/7 Customer Support
+                Support Anytime
               </h3>
               <p className="text-gray-600 leading-relaxed">
                 Round-the-clock assistance to help you with any questions or
@@ -55,7 +54,7 @@ const Benifits = () => {
             <div className="bg-white !p-8 rounded-lg shadow-lg text-center border border-gray-100">
               <div className="text-4xl mb-6">✅</div>
               <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                Verified Listings
+                Trusted Stays
               </h3>
               <p className="text-gray-600 leading-relaxed">
                 All our listings are thoroughly verified to ensure quality and

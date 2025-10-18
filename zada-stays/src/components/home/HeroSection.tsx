@@ -19,14 +19,13 @@ const HeroSection = () => {
       {/* Hero Content */}
       <div className="relative z-10 text-center text-white px-6 lg:px-8 max-w-4xl mx-auto">
         <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-8 leading-tight">
-          Find Your Perfect Home
+          Your Home from Home
         </h1>
         <p className="text-xl sm:text-2xl lg:text-3xl mb-12 max-w-3xl mx-auto leading-relaxed">
-          Discover premium apartments with Zada Stays - your trusted partner in
-          finding the ideal living space
+          Unwind in Style, Stay with a Smile
         </p>
-        <Link href="/apartments">
-          <button className="!mt-3  bg-gray-800 hover:bg-gray-700 text-white font-semibold  !px-4 !py-2 rounded-lg transition-colors text-xl border border-gray-600">
+        <Link href="/apartments" className="cursor-pointer">
+          <button className="!mt-3 cursor-pointer bg-gray-800 hover:bg-gray-700 text-white font-semibold  !px-4 !py-2 rounded-lg transition-colors text-xl border border-gray-600">
             View Apartments
           </button>
         </Link>
