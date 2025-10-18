@@ -184,13 +184,28 @@ const AboutPage = () => {
               📞 Call or WhatsApp us today to explore our available properties and make your booking with ease.
             </p>
             
-            {/* Company Policies Link */}
-            <div className="!mb-8">
-              <Link href="/company-policies" target="_blank" rel="noopener noreferrer">
-                <span className="!text-lg !font-semibold !text-blue-600 hover:!text-blue-800 !underline !cursor-pointer !transition-colors">
-                  📋 COMPANY POLICIES
-                </span>
-              </Link>
+            {/* Company Policies Section */}
+            <div className="!mb-12 !max-w-2xl !mx-auto">
+              <div className="!bg-gradient-to-r !from-blue-50 !to-indigo-50 !p-8 !rounded-xl !border !border-blue-200 !shadow-lg hover:!shadow-xl !transition-all !duration-300">
+                <div className="!text-center">
+                  <div className="!text-4xl !mb-4">📋</div>
+                  <h4 className="!text-xl !font-bold !text-gray-800 !mb-3">
+                    Important Information
+                  </h4>
+                  <p className="!text-gray-600 !mb-6 !leading-relaxed">
+                    Before you join our community, please review our terms and policies to ensure a smooth experience for everyone.
+                  </p>
+                  <Link href="/company-policies" target="_blank" rel="noopener noreferrer">
+                    <button className="!bg-blue-600 hover:!bg-blue-700 !text-white !font-semibold !px-8 !py-4 !rounded-lg !transition-all !duration-300 !text-lg !border !border-blue-600 !shadow-md hover:!shadow-lg !transform hover:!-translate-y-1">
+                      📋 View Company Policies
+                      <span className="!ml-2 !text-sm">↗</span>
+                    </button>
+                  </Link>
+                  <p className="!text-sm !text-gray-500 !mt-3">
+                    Opens in new tab • Takes 2 minutes to read
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
 
