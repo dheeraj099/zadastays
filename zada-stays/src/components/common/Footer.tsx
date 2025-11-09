@@ -48,10 +48,10 @@ const Footer = () => {
              <p className="flex items-center">
   <span className="mr-3">📞</span>
   <a
-    href="tel:6360234678"
+    href="tel:8105710678"
     className="hover:underline hover:text-blue-600 transition-colors"
   >
-    6360234678
+    8105710678
   </a>
 </p>
 

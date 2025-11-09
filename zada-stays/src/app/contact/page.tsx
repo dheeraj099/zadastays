@@ -39,7 +39,7 @@ export default function ContactPage() {
                 </div>
                 <div className="!ml-4">
                   <h3 className="text-lg font-semibold text-gray-900 !mb-1">Phone</h3>
-                  <p className="text-gray-600">+1 (555) 123-4567</p>
+                  <p className="text-gray-600">8105710678</p>
                 </div>
               </div>
 
@@ -67,8 +67,8 @@ export default function ContactPage() {
                 <div className="!ml-4">
                   <h3 className="text-lg font-semibold text-gray-900 !mb-1">Address</h3>
                   <p className="text-gray-600">
-                    123 Business District<br />
-                    City Center, State 12345
+                    Zada Stays, 170/B, 5th Main Rd, Thayappa Garden, Ranka Colony, Bilekahalli, Bengaluru, Karnataka 560076<br />
+                    
                   </p>
                 </div>
               </div>
@@ -109,7 +109,23 @@ export default function ContactPage() {
                     className="w-full !px-4 !py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent outline-none transition-all"
                     required
                   />
+                  
                 </div>
+                <div>
+                  <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700 !mb-2">
+                    Phone *
+                  </label>
+                  <input
+                    type="tel"
+                    id="phoneNumber"
+                    name="phoneNumber"
+                    placeholder="Enter your phone number"
+                    className="w-full !px-4 !py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent outline-none transition-all"
+                    required
+                  />
+                  
+                </div>
+                
 
                 {/* Email Address */}
                 <div>
@@ -125,6 +141,29 @@ export default function ContactPage() {
                     required
                   />
                 </div>
+
+                <div>
+  <label
+    htmlFor="interestedLocation"
+    className="block text-sm font-medium text-gray-700 !mb-2"
+  >
+    Interested location *
+  </label>
+  <select
+    id="interestedLocation"
+    name="interestedLocation"
+    className="w-full !px-4 !py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent outline-none transition-all"
+    required
+  >
+    <option value="">Select a location</option>
+    <option value="delhi">Delhi</option>
+    <option value="mumbai">Mumbai</option>
+    <option value="bangalore">Bangalore</option>
+    <option value="hyderabad">Hyderabad</option>
+    <option value="chennai">Chennai</option>
+  </select>
+</div>
+
 
                 {/* Message */}
                 <div>
