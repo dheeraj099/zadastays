@@ -17,7 +17,7 @@ export default async function ApartmentPage({ params }: ApartmentPageProps) {
       <NavBar />
 
       {/* Apartment Details Section */}
-      <ApartmentDetails apartmentName={apartmentName} />
+      <ApartmentDetails apartmentSlug={apartmentName} />
 
       {/* Footer */}
       <Footer />

@@ -4,7 +4,6 @@ import Benifits from "@/components/home/Benifits";
 import HeroSection from "@/components/home/HeroSection";
 import Testimonials from "@/components/home/Testimonials";
 import Image from "next/image";
-import { notion } from "@/lib/notion";
 
 export default function Home() {
   return (

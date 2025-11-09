@@ -1,7 +1,11 @@
-import React from "react";
-import Link from "next/link";
 import NavBar from "@/components/common/NavBar";
 import Footer from "@/components/common/Footer";
+import { notFound } from "next/navigation";
+import {
+  fetchApartmentBySlug,
+  fetchRoomTypesForApartment,
+  formatCurrency,
+} from "@/lib/notion";
 
 interface EnquiryPageProps {
   params: Promise<{
@@ -11,10 +15,26 @@ interface EnquiryPageProps {
 
 export default async function EnquiryPage({ params }: EnquiryPageProps) {
   const { apartmentName } = await params;
-  const decodedApartmentName = decodeURIComponent(apartmentName).replace(
-    /-/g,
-    " "
-  );
+  const apartment = await fetchApartmentBySlug(apartmentName);
+
+  if (!apartment) {
+    notFound();
+  }
+
+  const roomTypes = await fetchRoomTypesForApartment(apartment.id);
+  const primaryRoomType = roomTypes[0] ?? null;
+
+  const formattedPrice = primaryRoomType
+    ? formatCurrency(primaryRoomType.price)
+    : null;
+
+  const amenities = primaryRoomType?.amenities ?? [];
+  const description =
+    primaryRoomType?.description || apartment.description || "";
+  const displayName = apartment.name;
+  const imageUrl =
+    apartment.imageUrl ??
+    "https://images.unsplash.com/photo-1507089947368-19c1da9775ae?q=80&w=1200&auto=format&fit=crop";
 
   return (
     <div className="min-h-screen bg-gray-50  ">
@@ -32,8 +52,8 @@ export default async function EnquiryPage({ params }: EnquiryPageProps) {
               {/* Apartment Image */}
               <div className="h-80">
                 <img
-                  src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                  alt="Premium 2BHK Apartment"
+                  src={imageUrl}
+                  alt={displayName}
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -41,10 +61,10 @@ export default async function EnquiryPage({ params }: EnquiryPageProps) {
               {/* Apartment Info */}
               <div className="!p-6 flex flex-col ">
                 <h2 className="text-2xl font-bold text-gray-900 !mb-2">
-                  Premium 2BHK Apartment
+                  {displayName}
                 </h2>
                 <p className="text-2xl font-bold text-gray-900 !mb-6">
-                  $1,800/month
+                  {formattedPrice ?? "Pricing on request"}
                 </p>
 
                 {/* Amenities */}
@@ -52,56 +72,20 @@ export default async function EnquiryPage({ params }: EnquiryPageProps) {
                   <h3 className="text-lg font-semibold text-gray-900 !mb-4">
                     Amenities
                   </h3>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="flex items-center">
-                      <span className="w-2 h-2 bg-green-500 rounded-full mr-3"></span>
-                      <span className="text-gray-600">Air Conditioning</span>
+                  {amenities.length > 0 ? (
+                    <div className="grid grid-cols-2 gap-4">
+                      {amenities.map((amenity) => (
+                        <div className="flex items-center" key={amenity}>
+                          <span className="w-2 h-2 bg-green-500 rounded-full mr-3"></span>
+                          <span className="text-gray-600">{amenity}</span>
+                        </div>
+                      ))}
                     </div>
-                    <div className="flex items-center">
-                      <span className="w-2 h-2 bg-green-500 rounded-full mr-3"></span>
-                      <span className="text-gray-600">WiFi Included</span>
-                    </div>
-                    <div className="flex items-center">
-                      <span className="w-2 h-2 bg-green-500 rounded-full mr-3"></span>
-                      <span className="text-gray-600">Furnished</span>
-                    </div>
-                    <div className="flex items-center">
-                      <span className="w-2 h-2 bg-green-500 rounded-full mr-3"></span>
-                      <span className="text-gray-600">24/7 Security</span>
-                    </div>
-                    <div className="flex items-center">
-                      <span className="w-2 h-2 bg-green-500 rounded-full mr-3"></span>
-                      <span className="text-gray-600">Parking Space</span>
-                    </div>
-                    <div className="flex items-center">
-                      <span className="w-2 h-2 bg-green-500 rounded-full mr-3"></span>
-                      <span className="text-gray-600">Laundry Service</span>
-                    </div>
-                    <div className="flex items-center">
-                      <span className="w-2 h-2 bg-green-500 rounded-full mr-3"></span>
-                      <span className="text-gray-600">Gym Access</span>
-                    </div>
-                    <div className="flex items-center">
-                      <span className="w-2 h-2 bg-green-500 rounded-full mr-3"></span>
-                      <span className="text-gray-600">Swimming Pool</span>
-                    </div>
-                    <div className="flex items-center">
-                      <span className="w-2 h-2 bg-green-500 rounded-full mr-3"></span>
-                      <span className="text-gray-600">Balcony View</span>
-                    </div>
-                    <div className="flex items-center">
-                      <span className="w-2 h-2 bg-green-500 rounded-full mr-3"></span>
-                      <span className="text-gray-600">Modern Kitchen</span>
-                    </div>
-                    <div className="flex items-center">
-                      <span className="w-2 h-2 bg-green-500 rounded-full mr-3"></span>
-                      <span className="text-gray-600">Storage Space</span>
-                    </div>
-                    <div className="flex items-center">
-                      <span className="w-2 h-2 bg-green-500 rounded-full mr-3"></span>
-                      <span className="text-gray-600">Pet Friendly</span>
-                    </div>
-                  </div>
+                  ) : (
+                    <p className="text-gray-600">
+                      Amenities details will be shared during the follow-up.
+                    </p>
+                  )}
                 </div>
 
                 {/* Description */}
@@ -110,12 +94,8 @@ export default async function EnquiryPage({ params }: EnquiryPageProps) {
                     Description
                   </h3>
                   <p className="text-gray-600 leading-relaxed">
-                    This beautifully designed 2BHK apartment offers modern
-                    living with premium amenities. Located in a prime area with
-                    easy access to transportation, shopping centers, and
-                    recreational facilities. The apartment features spacious
-                    rooms, modern fixtures, and stunning views of the city
-                    skyline.
+                    {description ||
+                      "We will share complete apartment details once we receive your enquiry."}
                   </p>
                 </div>
               </div>
