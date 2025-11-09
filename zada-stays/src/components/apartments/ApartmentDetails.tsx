@@ -6,6 +6,15 @@ import {
   formatCurrency,
 } from "@/lib/notion";
 
+type RoomType = {
+  id: string;
+  name: string;
+  price: number | null;
+  amenities: string[];
+  availability: boolean | null;
+  description: string;
+};
+
 interface ApartmentDetailsProps {
   apartmentSlug: string;
 }
@@ -17,7 +26,9 @@ const ApartmentDetails = async ({ apartmentSlug }: ApartmentDetailsProps) => {
     notFound();
   }
 
-  const roomTypes = await fetchRoomTypesForApartment(apartment.id);
+  const roomTypes = (await fetchRoomTypesForApartment(
+    apartment.id,
+  )) as RoomType[];
 
   return (
     <section className="!py-16 !px-6 lg:!px-8 bg-white flex flex-col  items-center justify-center">
@@ -49,7 +60,7 @@ const ApartmentDetails = async ({ apartmentSlug }: ApartmentDetailsProps) => {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {roomTypes.map((room) => (
+            {roomTypes.map((room: RoomType) => (
               <div
                 key={room.id}
                 className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"

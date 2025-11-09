@@ -74,7 +74,7 @@ export default async function EnquiryPage({ params }: EnquiryPageProps) {
                   </h3>
                   {amenities.length > 0 ? (
                     <div className="grid grid-cols-2 gap-4">
-                      {amenities.map((amenity) => (
+                      {amenities.map((amenity:string) => (
                         <div className="flex items-center" key={amenity}>
                           <span className="w-2 h-2 bg-green-500 rounded-full mr-3"></span>
                           <span className="text-gray-600">{amenity}</span>

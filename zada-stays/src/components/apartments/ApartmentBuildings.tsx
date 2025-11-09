@@ -1,11 +1,21 @@
 import Link from "next/link";
 import { fetchApartments } from "@/lib/notion";
 
+type Apartment = {
+  id: string;
+  name: string;
+  slug: string;
+  location: string;
+  description: string;
+  imageUrl: string | null;
+  roomTypeIds: string[];
+};
+
 const fallbackImage =
   "https://images.unsplash.com/photo-1502672023488-70e25813eb80?q=80&w=1200&auto=format&fit=crop";
 
 const ApartmentBuildings = async () => {
-  const apartments = await fetchApartments();
+  const apartments = (await fetchApartments()) as Apartment[];
 
   return (
     <section className="!py-16 !px-6 lg:!px-8 bg-gray-50 flex flex-col items-center justify-center">
@@ -28,7 +38,7 @@ const ApartmentBuildings = async () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {apartments.map((apartment) => (
+            {apartments.map((apartment: Apartment) => (
               <div
                 key={apartment.id}
                 className="flex flex-col bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
