@@ -78,12 +78,20 @@ const Footer = () => {
             <div className="space-y-4 text-gray-300 flex flex-col gap-2">
              <p className="flex items-center">
   <span className="mr-3">📞</span>
-  <a
-    href="tel:8105710678"
-    className="hover:underline hover:text-blue-600 transition-colors"
-  >
-    8105710678
-  </a>
+  <span className="flex flex-col">
+    <a
+      href="tel:8105710678"
+      className="hover:underline hover:text-blue-600 transition-colors"
+    >
+      8105710678
+    </a>
+    <a
+      href="tel:8123684678"
+      className="hover:underline hover:text-blue-600 transition-colors"
+    >
+      8123684678
+    </a>
+  </span>
 </p>
 
              <p className="flex items-center">

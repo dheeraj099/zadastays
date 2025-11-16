@@ -7,6 +7,7 @@ type ContactFormProps = {
 
 const ContactForm: React.FC<ContactFormProps> = ({ locations }) => {
     const [submitted, setSubmitted] = useState(false);
+    const [selectedLocation, setSelectedLocation] = useState<string>("");
 
     const onSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
         e.preventDefault();
@@ -68,7 +69,8 @@ const ContactForm: React.FC<ContactFormProps> = ({ locations }) => {
                         name="interestedLocation"
                         className="w-full !px-4 !py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent outline-none transition-all text-gray-900"
                         required
-                        defaultValue=""
+                        value={selectedLocation}
+                        onChange={(e) => setSelectedLocation(e.target.value)}
                     >
                         <option value="" disabled className="text-gray-400">
                             Select a location
@@ -78,8 +80,24 @@ const ContactForm: React.FC<ContactFormProps> = ({ locations }) => {
                                 {loc}
                             </option>
                         ))}
+                        <option value="others" className="text-gray-900">Others</option>
                     </select>
                 </div>
+                {selectedLocation === "others" ? (
+                    <div>
+                        <label htmlFor="preferredLocation" className="block text-sm font-medium text-gray-700 !mb-2">
+                            Preferred location
+                        </label>
+                        <input
+                            type="text"
+                            id="preferredLocation"
+                            name="preferredLocation"
+                            placeholder="Enter your preferred location"
+                            className="w-full !px-4 !py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent outline-none transition-all placeholder-gray-400 text-gray-900"
+                            required
+                        />
+                    </div>
+                ) : null}
                 <div>
                     <label htmlFor="message" className="block text-sm font-medium text-gray-700 !mb-2">
                         Message *
