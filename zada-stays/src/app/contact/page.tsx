@@ -1,8 +1,24 @@
 import React from "react";
 import NavBar from "@/components/common/NavBar";
 import Footer from "@/components/common/Footer";
+import { fetchApartments } from "@/lib/notion";
+import ContactForm from "@/components/contact/ContactForm";
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  let locations: string[] = [];
+  try {
+    const apartments = await fetchApartments();
+    const uniqueLocations = Array.from(
+      new Set(
+        (apartments as Array<{ location?: string }>)
+          .map((a) => a.location || "")
+          .filter(Boolean),
+      ),
+    );
+    locations = uniqueLocations.sort((a, b) => a.localeCompare(b));
+  } catch {
+    locations = [];
+  }
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Navigation Bar */}
@@ -94,101 +110,7 @@ export default function ContactPage() {
               Send us a Message
             </h2>
 
-            <div className="bg-white rounded-lg shadow-lg !p-8">
-              <form className="!space-y-6">
-                {/* Full Name */}
-                <div>
-                  <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 !mb-2">
-                    Full Name *
-                  </label>
-                  <input
-                    type="text"
-                    id="fullName"
-                    name="fullName"
-                    placeholder="Enter your full name"
-                    className="w-full !px-4 !py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent outline-none transition-all"
-                    required
-                  />
-                  
-                </div>
-                <div>
-                  <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700 !mb-2">
-                    Phone *
-                  </label>
-                  <input
-                    type="tel"
-                    id="phoneNumber"
-                    name="phoneNumber"
-                    placeholder="Enter your phone number"
-                    className="w-full !px-4 !py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent outline-none transition-all"
-                    required
-                  />
-                  
-                </div>
-                
-
-                {/* Email Address */}
-                <div>
-                  <label htmlFor="emailAddress" className="block text-sm font-medium text-gray-700 !mb-2">
-                    Email Address *
-                  </label>
-                  <input
-                    type="email"
-                    id="emailAddress"
-                    name="emailAddress"
-                    placeholder="Enter your email address"
-                    className="w-full !px-4 !py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent outline-none transition-all"
-                    required
-                  />
-                </div>
-
-                <div>
-  <label
-    htmlFor="interestedLocation"
-    className="block text-sm font-medium text-gray-700 !mb-2"
-  >
-    Interested location *
-  </label>
-  <select
-    id="interestedLocation"
-    name="interestedLocation"
-    className="w-full !px-4 !py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent outline-none transition-all"
-    required
-  >
-    <option value="">Select a location</option>
-    <option value="delhi">Delhi</option>
-    <option value="mumbai">Mumbai</option>
-    <option value="bangalore">Bangalore</option>
-    <option value="hyderabad">Hyderabad</option>
-    <option value="chennai">Chennai</option>
-  </select>
-</div>
-
-
-                {/* Message */}
-                <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-gray-700 !mb-2">
-                    Message *
-                  </label>
-                  <textarea
-                    id="message"
-                    name="message"
-                    rows={6}
-                    placeholder="Tell us how we can help you..."
-                    className="w-full !px-4 !py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent outline-none transition-all resize-none"
-                    required
-                  ></textarea>
-                </div>
-
-                {/* Submit Button */}
-                <button
-                  type="submit"
-                  className="w-full bg-gray-800 hover:bg-gray-700 text-white font-semibold !py-3 !px-6 rounded-lg transition-colors duration-200"
-                >
-                  Send Message
-                </button>
-              </form>
-            </div>
+            <ContactForm locations={locations} />
           </div>
         </div>
       </div>
