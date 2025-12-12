@@ -6,6 +6,7 @@ import {
   fetchRoomTypesForApartment,
   formatCurrency,
 } from "@/lib/notion";
+import EnquiryForm from "@/components/apartments/EnquiryForm";
 
 interface EnquiryPageProps {
   params: Promise<{
@@ -28,7 +29,6 @@ export default async function EnquiryPage({ params }: EnquiryPageProps) {
     ? formatCurrency(primaryRoomType.price)
     : null;
 
-  const amenities = primaryRoomType?.amenities ?? [];
   const description =
     primaryRoomType?.description || apartment.description || "";
   const displayName = apartment.name;
@@ -67,113 +67,161 @@ export default async function EnquiryPage({ params }: EnquiryPageProps) {
                   {formattedPrice ?? "Pricing on request"}
                 </p>
 
-                {/* Amenities */}
-                <div className="!mb-6">
-                  <h3 className="text-lg font-semibold text-gray-900 !mb-4">
-                    Amenities
-                  </h3>
-                  {amenities.length > 0 ? (
-                    <div className="grid grid-cols-2 gap-4">
-                      {amenities.map((amenity:string) => (
-                        <div className="flex items-center" key={amenity}>
-                          <span className="w-2 h-2 bg-green-500 rounded-full mr-3"></span>
-                          <span className="text-gray-600">{amenity}</span>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-gray-600">
-                      Amenities details will be shared during the follow-up.
-                    </p>
-                  )}
-                </div>
-
                 {/* Description */}
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900 !mb-3">
                     Description
                   </h3>
-                  <p className="text-gray-600 leading-relaxed">
-                    {description ||
-                      "We will share complete apartment details once we receive your enquiry."}
-                  </p>
+                  <div className="text-gray-600 leading-relaxed">
+                    {(() => {
+                      const lines = (description ||
+                        "We will share complete apartment details once we receive your enquiry.")
+                        .split("\n");
+                      
+                      return lines.map((line: string, index: number) => {
+                        const processLine = (text: string) => {
+                          const parts: (string | React.ReactElement)[] = [];
+                          const matches: Array<{ index: number; length: number; text: string; key: string; isLink?: boolean; linkUrl?: string }> = [];
+                          
+                          // Check for "📍 Location Link:"
+                          const locationLinkIndex = text.indexOf("📍 Location Link:");
+                          if (locationLinkIndex !== -1) {
+                            matches.push({
+                              index: locationLinkIndex,
+                              length: "📍 Location Link:".length,
+                              text: "📍 Location Link:",
+                              key: `location-label-${index}`,
+                              isLink: false
+                            });
+                          }
+                          
+                          // Find all matches
+                          const amenitiesIndex = text.indexOf("⭐ AMENITIES");
+                          if (amenitiesIndex !== -1) {
+                            matches.push({
+                              index: amenitiesIndex,
+                              length: "⭐ AMENITIES".length,
+                              text: "⭐ AMENITIES",
+                              key: `amenities-${index}`
+                            });
+                          }
+                          
+                          const chargesIndex = text.indexOf("⚡ ADDITIONAL CHARGES");
+                          if (chargesIndex !== -1) {
+                            matches.push({
+                              index: chargesIndex,
+                              length: "⚡ ADDITIONAL CHARGES".length,
+                              text: "⚡ ADDITIONAL CHARGES",
+                              key: `charges-${index}`
+                            });
+                          }
+                          
+                          // Check for "💵 Rent"
+                          const rentIndex = text.indexOf("💵 Rent");
+                          if (rentIndex !== -1) {
+                            matches.push({
+                              index: rentIndex,
+                              length: "💵 Rent".length,
+                              text: "💵 Rent",
+                              key: `rent-${index}`
+                            });
+                          }
+                          
+                          // Check for "💰 Deposit"
+                          const depositIndex = text.indexOf("💰 Deposit");
+                          if (depositIndex !== -1) {
+                            matches.push({
+                              index: depositIndex,
+                              length: "💰 Deposit".length,
+                              text: "💰 Deposit",
+                              key: `deposit-${index}`
+                            });
+                          }
+                          
+                          // Check for "🛠️ Maintenance"
+                          const maintenanceIndex = text.indexOf("🛠️ Maintenance");
+                          if (maintenanceIndex !== -1) {
+                            matches.push({
+                              index: maintenanceIndex,
+                              length: "🛠️ Maintenance".length,
+                              text: "🛠️ Maintenance",
+                              key: `maintenance-${index}`
+                            });
+                          }
+                          
+                          // Sort matches by index
+                          matches.sort((a, b) => a.index - b.index);
+                          
+                          if (matches.length === 0) {
+                            return [text];
+                          }
+                          
+                          let lastIndex = 0;
+                          matches.forEach((match) => {
+                            // Add text before the match
+                            if (match.index > lastIndex) {
+                              parts.push(text.substring(lastIndex, match.index));
+                            }
+                            
+                            // Add styled match
+                            parts.push(
+                              <span key={match.key} className="text-lg font-semibold text-gray-900">
+                                {match.text}
+                              </span>
+                            );
+                            
+                            lastIndex = match.index + match.length;
+                          });
+                          
+                          // Add remaining text
+                          if (lastIndex < text.length) {
+                            parts.push(text.substring(lastIndex));
+                          }
+                          
+                          return parts;
+                        };
+                        
+                        // Check if previous line contains "📍 Location Link:" and current line is a URL
+                        const prevLine = index > 0 ? lines[index - 1] : "";
+                        const isLocationLinkValue = prevLine.includes("📍 Location Link:") && line.trim();
+                        
+                        if (isLocationLinkValue) {
+                          // Check if it's a URL
+                          const trimmedLine = line.trim();
+                          const isUrl = /^https?:\/\//i.test(trimmedLine);
+                          const linkUrl = isUrl ? trimmedLine : (trimmedLine.startsWith('www.') ? `https://${trimmedLine}` : trimmedLine);
+                          
+                          return (
+                            <p key={index} className={index > 0 ? "!mt-0.5" : ""}>
+                              <a
+                                href={linkUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 hover:text-blue-800 underline"
+                              >
+                                {trimmedLine}
+                              </a>
+                            </p>
+                          );
+                        }
+                        
+                        return (
+                          <p key={index} className={index > 0 ? "!mt-0.5" : ""}>
+                            {processLine(line || "\u00A0")}
+                          </p>
+                        );
+                      });
+                    })()}
+                  </div>
                 </div>
               </div>
             </div>
 
             {/* Right Column - Enquiry Form */}
-            <div className="bg-white rounded-lg shadow-lg !p-8">
-              <h2 className="text-2xl font-bold text-gray-900 !mb-2">
-                Interested? Send us an enquiry
-              </h2>
-              <p className="text-gray-600 !mb-8">
-                Fill out the form below and we&apos;ll get back to you as soon as
-                possible.
-              </p>
-
-              <form className="space-y-6">
-                {/* Full Name */}
-                <div>
-                  <label
-                    htmlFor="fullName"
-                    className="block text-sm font-medium text-gray-700 !mb-2"
-                  >
-                    Full Name *
-                  </label>
-                  <input
-                    type="text"
-                    id="fullName"
-                    name="fullName"
-                    placeholder="Enter your full name"
-                    className="w-full !px-4 !py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent outline-none transition-all"
-                    required
-                  />
-                </div>
-
-                {/* Phone Nu!mber */}
-                <div>
-                  <label
-                    htmlFor="phoneNu!mber"
-                    className="block text-sm font-medium text-gray-700 !mb-2"
-                  >
-                    Phone Nu!mber *
-                  </label>
-                  <input
-                    type="tel"
-                    id="phoneNu!mber"
-                    name="phoneNu!mber"
-                    placeholder="Enter your phone nu!mber"
-                    className="w-full !px-4 !py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent outline-none transition-all"
-                    required
-                  />
-                </div>
-
-                {/* Message */}
-                <div>
-                  <label
-                    htmlFor="message"
-                    className="block text-sm font-medium text-gray-700 !mb-2"
-                  >
-                    Message
-                  </label>
-                  <textarea
-                    id="message"
-                    name="message"
-                    rows={4}
-                    placeholder="Tell us about your requirements..."
-                    className="w-full !px-4 !py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent outline-none transition-all resize-none"
-                  ></textarea>
-                </div>
-
-                {/* Submit Button */}
-                <button
-                  type="submit"
-                  className="w-full bg-gray-800 hover:bg-gray-700 text-white font-semibold !py-3 !px-6 rounded-lg transition-colors duration-200"
-                >
-                  Submit Enquiry
-                </button>
-              </form>
-            </div>
+            <EnquiryForm
+              apartmentName={displayName}
+              apartmentLocation={apartment.location || ""}
+            />
           </div>
         </div>
       </div>

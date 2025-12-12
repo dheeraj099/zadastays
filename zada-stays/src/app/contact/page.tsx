@@ -55,9 +55,9 @@ export default async function ContactPage() {
                 </div>
                 <div className="!ml-4">
                   <h3 className="text-lg font-semibold text-gray-900 !mb-1">Phone</h3>
-                  <div className="flex flex-col">
-                    <a href="tel:8105710678" className="text-gray-600 hover:text-gray-800 hover:underline">8105710678</a>
-                    <a href="tel:8123684678" className="text-gray-600 hover:text-gray-800 hover:underline">8123684678</a>
+                  <div className="flex flex-col gap-1">
+                    <a href="tel:+918105710678" className="text-gray-600 hover:text-gray-800 hover:underline">+91 810 571 0678</a>
+                    <a href="tel:+918123684678" className="text-gray-600 hover:text-gray-800 hover:underline">+91 812 368 4678</a>
                   </div>
                 </div>
               </div>

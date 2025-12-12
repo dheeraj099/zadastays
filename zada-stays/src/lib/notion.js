@@ -197,10 +197,12 @@ export const fetchRoomTypesForApartment = async (apartmentId) => {
           ? properties["Amenities"].multi_select.map((item) => item.name)
           : [];
 
-      const availability =
-        properties["Availability"]?.type === "checkbox"
-          ? properties["Availability"].checkbox
-          : null;
+      let availability = null;
+      if (properties["Availability"]?.type === "checkbox") {
+        availability = properties["Availability"].checkbox;
+      } else if (properties["Availability"]?.type === "select") {
+        availability = properties["Availability"].select?.name || null;
+      }
 
       const description =
         properties["Description"]?.type === "rich_text"

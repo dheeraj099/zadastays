@@ -11,7 +11,7 @@ type RoomType = {
   name: string;
   price: number | null;
   amenities: string[];
-  availability: boolean | null;
+  availability: boolean | string | null;
   description: string;
 };
 
@@ -26,26 +26,31 @@ const ApartmentDetails = async ({ apartmentSlug }: ApartmentDetailsProps) => {
     notFound();
   }
 
-  const roomTypes = (await fetchRoomTypesForApartment(
+  const allRoomTypes = (await fetchRoomTypesForApartment(
     apartment.id,
   )) as RoomType[];
+
+  // Filter to show only rooms with availability === true or "yes"
+  const roomTypes = allRoomTypes.filter(
+    (room) => room.availability === true || room.availability === "yes"
+  );
 
   return (
     <section className="!py-16 !px-6 lg:!px-8 bg-white flex flex-col  items-center justify-center">
       <div className="max-w-7xl mx-auto flex flex-col">
         <div className="text-center !mb-16  flex flex-col items-center justify-center">
-          <p className="text-base font-semibold uppercase tracking-wide text-gray-500">
-            {apartment.location || "Featured Apartment"}
-          </p>
           <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 !mb-4">
             {apartment.name}
           </h1>
           {(apartment.description || roomTypes.length > 0) && (
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto text-center">
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto text-center !mb-4">
               {apartment.description ||
                 "Choose the perfect room type that fits your lifestyle and budget."}
             </p>
           )}
+          <p className="text-base font-semibold uppercase tracking-wide text-gray-500">
+            {apartment.location || "Featured Apartment"}
+          </p>
         </div>
 
         {roomTypes.length === 0 ? (
@@ -77,25 +82,7 @@ const ApartmentDetails = async ({ apartmentSlug }: ApartmentDetailsProps) => {
                     ) : null}
                   </div>
 
-                  {room.availability != null ? (
-                    <span
-                      className={`inline-flex items-center justify-center rounded-full px-3 py-1 text-sm font-semibold ${
-                        room.availability
-                          ? "bg-green-100 text-green-800"
-                          : "bg-red-100 text-red-700"
-                      }`}
-                    >
-                      {room.availability ? "Available" : "Not Available"}
-                    </span>
-                  ) : null}
-
                   <div className="h-4" />
-
-                  {room.description ? (
-                    <p className="text-gray-600 leading-relaxed !mb-5">
-                      {room.description}
-                    </p>
-                  ) : null}
 
                   {room.amenities.length > 0 ? (
                     <div className="!mb-6">

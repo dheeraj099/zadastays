@@ -62,7 +62,7 @@ const Footer = () => {
                 <IconInstagram />
               </a>
               <a
-                href=" https://wa.me/message/ZSUBJYAA5NMLK1"
+                href="https://wa.me/918105710678"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:opacity-80 transition-opacity"
@@ -78,18 +78,18 @@ const Footer = () => {
             <div className="space-y-4 text-gray-300 flex flex-col gap-2">
              <p className="flex items-center">
   <span className="mr-3">📞</span>
-  <span className="flex flex-col">
+  <span className="flex flex-col gap-1">
     <a
-      href="tel:8105710678"
+      href="tel:+918105710678"
       className="hover:underline hover:text-blue-600 transition-colors"
     >
-      8105710678
+      +91 810 571 0678
     </a>
     <a
-      href="tel:8123684678"
+      href="tel:+918123684678"
       className="hover:underline hover:text-blue-600 transition-colors"
     >
-      8123684678
+      +91 812 368 4678
     </a>
   </span>
 </p>

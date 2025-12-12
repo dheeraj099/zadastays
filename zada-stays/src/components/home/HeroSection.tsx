@@ -17,11 +17,11 @@ const HeroSection = () => {
       </div>
 
       {/* Hero Content */}
-      <div className="relative z-10 text-center text-white px-6 lg:px-8 max-w-4xl mx-auto">
-        <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-8 leading-tight">
-          Your Home from Home
+      <div className="relative z-10 text-center text-white px-6 lg:px-8 max-w-4xl mx-auto flex flex-col items-center">
+        <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-8 leading-tight lg:whitespace-nowrap text-center">
+          Your Home Away from Home
         </h1>
-        <p className="text-xl sm:text-2xl lg:text-3xl mb-12 max-w-3xl mx-auto leading-relaxed">
+        <p className="text-xl sm:text-2xl lg:text-3xl mb-12 max-w-3xl leading-relaxed text-center">
           Unwind in Style, Stay with a Smile
         </p>
         <Link href="/apartments" className="cursor-pointer">
