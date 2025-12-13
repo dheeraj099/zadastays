@@ -133,6 +133,9 @@ export const fetchApartments = async () => {
           : [];
 
       const imageUrl = extractFileUrl(imageFiles?.[0]);
+      const imageUrls = imageFiles
+        .map((file) => extractFileUrl(file))
+        .filter(Boolean);
 
       const roomTypeIds = getRelationIds(properties, ["room types"]);
 
@@ -143,6 +146,7 @@ export const fetchApartments = async () => {
         location,
         description,
         imageUrl,
+        imageUrls,
         roomTypeIds,
       };
     })

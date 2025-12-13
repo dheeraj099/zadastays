@@ -104,7 +104,7 @@ const ApartmentDetails = async ({ apartmentSlug }: ApartmentDetailsProps) => {
                   ) : null}
 
                   <Link
-                    href={`/apartments/${apartment.slug}/enquiry`}
+                    href={`/apartments/${apartment.slug}/enquiry?roomType=${encodeURIComponent(room.name)}`}
                     className="mt-auto block w-full bg-gray-800 hover:bg-gray-700 text-white font-semibold !py-3 !px-4 rounded-lg transition-colors duration-200 text-center"
                   >
                     View Details

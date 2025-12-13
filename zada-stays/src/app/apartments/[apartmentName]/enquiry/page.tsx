@@ -7,15 +7,20 @@ import {
   formatCurrency,
 } from "@/lib/notion";
 import EnquiryForm from "@/components/apartments/EnquiryForm";
+import ImageCarousel from "@/components/apartments/ImageCarousel";
 
 interface EnquiryPageProps {
   params: Promise<{
     apartmentName: string;
   }>;
+  searchParams: Promise<{
+    roomType?: string;
+  }>;
 }
 
-export default async function EnquiryPage({ params }: EnquiryPageProps) {
+export default async function EnquiryPage({ params, searchParams }: EnquiryPageProps) {
   const { apartmentName } = await params;
+  const { roomType: selectedRoomTypeName } = await searchParams;
   const apartment = await fetchApartmentBySlug(apartmentName);
 
   if (!apartment) {
@@ -23,7 +28,17 @@ export default async function EnquiryPage({ params }: EnquiryPageProps) {
   }
 
   const roomTypes = await fetchRoomTypesForApartment(apartment.id);
-  const primaryRoomType = roomTypes[0] ?? null;
+  
+  // Find the selected room type by name, or fall back to the first one
+  let primaryRoomType = roomTypes[0] ?? null;
+  if (selectedRoomTypeName) {
+    const foundRoomType = roomTypes.find(
+      (rt) => rt.name.toLowerCase().trim() === selectedRoomTypeName.toLowerCase().trim()
+    );
+    if (foundRoomType) {
+      primaryRoomType = foundRoomType;
+    }
+  }
 
   const formattedPrice = primaryRoomType
     ? formatCurrency(primaryRoomType.price)
@@ -32,9 +47,21 @@ export default async function EnquiryPage({ params }: EnquiryPageProps) {
   const description =
     primaryRoomType?.description || apartment.description || "";
   const displayName = apartment.name;
-  const imageUrl =
-    apartment.imageUrl ??
+  const fallbackImage =
     "https://images.unsplash.com/photo-1507089947368-19c1da9775ae?q=80&w=1200&auto=format&fit=crop";
+  
+  // Use imageUrls if available, otherwise fall back to imageUrl, or default
+  let images =
+    apartment.imageUrls && apartment.imageUrls.length > 0
+      ? apartment.imageUrls
+      : apartment.imageUrl
+      ? [apartment.imageUrl]
+      : [fallbackImage];
+  
+  // Reorder images: start from second image, first image goes to the end
+  if (images.length > 1) {
+    images = [...images.slice(1), images[0]];
+  }
 
   return (
     <div className="min-h-screen bg-gray-50  ">
@@ -49,14 +76,8 @@ export default async function EnquiryPage({ params }: EnquiryPageProps) {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Left Column - Apartment Details */}
             <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-              {/* Apartment Image */}
-              <div className="h-80">
-                <img
-                  src={imageUrl}
-                  alt={displayName}
-                  className="w-full h-full object-cover"
-                />
-              </div>
+              {/* Apartment Image Carousel */}
+              <ImageCarousel images={images} alt={displayName} />
 
               {/* Apartment Info */}
               <div className="!p-6 flex flex-col ">

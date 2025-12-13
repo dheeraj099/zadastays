@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 
 type ContactFormProps = {
     locations: string[];
@@ -10,6 +10,7 @@ const ContactForm: React.FC<ContactFormProps> = ({ locations }) => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [selectedLocation, setSelectedLocation] = useState<string>("");
+    const formRef = useRef<HTMLFormElement>(null);
 
     const onSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
         e.preventDefault();
@@ -41,8 +42,10 @@ const ContactForm: React.FC<ContactFormProps> = ({ locations }) => {
             }
 
             setSubmitted(true);
-            // Reset form
-            e.currentTarget.reset();
+            // Reset form using ref
+            if (formRef.current) {
+                formRef.current.reset();
+            }
             setSelectedLocation("");
         } catch (err) {
             setError(
@@ -60,7 +63,7 @@ const ContactForm: React.FC<ContactFormProps> = ({ locations }) => {
                     <p className="text-red-800">{error}</p>
                 </div>
             )}
-            <form className="!space-y-6" onSubmit={onSubmit}>
+            <form ref={formRef} className="!space-y-6" onSubmit={onSubmit}>
                 <div>
                     <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 !mb-2">
                         Full Name *
