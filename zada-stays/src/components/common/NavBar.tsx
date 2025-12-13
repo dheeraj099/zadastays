@@ -22,7 +22,7 @@ const NavBar = () => {
               isActive("/") ? "text-gray-900 border-b-2 border-gray-900 pb-1" : "text-gray-700 hover:text-gray-900"
             }`}
           >
-            Home
+            HOME
           </Link>
           <Link
             href="/apartments"
@@ -31,7 +31,7 @@ const NavBar = () => {
               isActive("/apartments") ? "text-gray-900 border-b-2 border-gray-900 pb-1" : "text-gray-700 hover:text-gray-900"
             }`}
           >
-            Apartments
+            APARTMENTS
           </Link>
           <Link
             href="/aboutUs"
@@ -40,7 +40,7 @@ const NavBar = () => {
               isActive("/aboutUs") ? "text-gray-900 border-b-2 border-gray-900 pb-1" : "text-gray-700 hover:text-gray-900"
             }`}
           >
-            About Us
+            ABOUT US
           </Link>
           <Link
             href="/contact"
@@ -49,7 +49,7 @@ const NavBar = () => {
               isActive("/contact") ? "text-gray-900 border-b-2 border-gray-900 pb-1" : "text-gray-700 hover:text-gray-900"
             }`}
           >
-            Contact us
+            CONTACT US 
           </Link>
         </div>
       </div>

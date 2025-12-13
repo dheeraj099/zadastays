@@ -71,7 +71,7 @@ export default async function ContactPage() {
                 </div>
                 <div className="!ml-4">
                   <h3 className="text-lg font-semibold text-gray-900 !mb-1">Email</h3>
-                  <p className="text-gray-600">info@zadastays.com</p>
+                  <p className="text-gray-600">zadastays@gmail.com</p>
                 </div>
               </div>
 
@@ -95,16 +95,17 @@ export default async function ContactPage() {
 
             {/* Interactive Map Placeholder */}
             <div className="!mt-12">
-              <div className="bg-gray-200 rounded-lg h-64 flex items-center justify-center">
-                <div className="text-center">
-                  <svg className="w-16 h-16 text-gray-400 !mx-auto !mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-1.447-.894L15 4m0 13V4m-6 3l6-3" />
-                  </svg>
-                  <p className="text-gray-500 font-medium">Interactive Map</p>
-                  <p className="text-gray-400 text-sm">Google Maps integration would go here.</p>
-                </div>
-              </div>
-            </div>
+  <div className="bg-gray-200 rounded-lg h-64 overflow-hidden">
+    <iframe
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3889.112355051265!2d77.60262657464955!3d12.90049628740837!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae1500406d72f7%3A0xa595536869858410!2sZada%20stays%20fire!5e0!3m2!1sen!2sin!4v1765615204832!5m2!1sen!2sin"
+      className="w-full h-full border-0"
+      loading="lazy"
+      referrerPolicy="no-referrer-when-downgrade"
+      allowFullScreen
+    />
+  </div>
+</div>
+
           </div>
 
           {/* Right Column - Contact Form */}
