@@ -33,7 +33,7 @@ export default async function EnquiryPage({ params, searchParams }: EnquiryPageP
   let primaryRoomType = roomTypes[0] ?? null;
   if (selectedRoomTypeName) {
     const foundRoomType = roomTypes.find(
-      (rt) => rt.name.toLowerCase().trim() === selectedRoomTypeName.toLowerCase().trim()
+      (rt:any) => rt.name.toLowerCase().trim() === selectedRoomTypeName.toLowerCase().trim()
     );
     if (foundRoomType) {
       primaryRoomType = foundRoomType;
