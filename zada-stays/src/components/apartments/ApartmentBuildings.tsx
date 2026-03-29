@@ -1,4 +1,4 @@
-import { fetchApartments, fetchRoomTypesForApartment } from "@/lib/notion";
+import { fetchApartmentsWithAvailability } from "@/lib/notion";
 import ApartmentSearch from "./ApartmentSearch";
 
 type Apartment = {
@@ -13,20 +13,8 @@ type Apartment = {
 };
 
 const ApartmentBuildings = async () => {
-  const apartments = (await fetchApartments()) as Apartment[];
-
-  // Check availability for each apartment
-  const apartmentsWithAvailability = await Promise.all(
-    apartments.map(async (apartment) => {
-      const roomTypes = await fetchRoomTypesForApartment(apartment.id);
-      // Check if any room type has availability = "yes" or true
-      const hasAvailableRooms = roomTypes.some(
-        (room: { availability: boolean | string | null }) =>
-          room.availability === true || room.availability === "yes"
-      );
-      return { ...apartment, hasAvailableRooms };
-    })
-  );
+  const apartmentsWithAvailability =
+    (await fetchApartmentsWithAvailability()) as Apartment[];
 
   return (
     <section className="!py-16 !px-6 lg:!px-8 bg-gray-50 flex flex-col items-center justify-center">

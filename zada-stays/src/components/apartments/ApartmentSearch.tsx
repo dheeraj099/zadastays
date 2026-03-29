@@ -24,21 +24,53 @@ type ApartmentSearchProps = {
 const ApartmentSearch = ({ apartments }: ApartmentSearchProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [showAvailableOnly, setShowAvailableOnly] = useState(false);
+  const [isSuggestionOpen, setIsSuggestionOpen] = useState(false);
+
+  const normalizedQuery = searchQuery.toLowerCase().trim();
+  const searchableApartments = apartments.filter(
+    (apartment) => !showAvailableOnly || apartment.hasAvailableRooms,
+  );
+
+  const seenLocations = new Set<string>();
+  const locationOptions: string[] = [];
+
+  for (const apartment of searchableApartments) {
+    const location = apartment.location?.trim();
+
+    if (!location) {
+      continue;
+    }
+
+    const normalizedLocation = location.toLowerCase();
+
+    if (seenLocations.has(normalizedLocation)) {
+      continue;
+    }
+
+    seenLocations.add(normalizedLocation);
+    locationOptions.push(location);
+  }
+
+  const matchingLocationOptions = normalizedQuery
+    ? locationOptions.filter((location) =>
+        location.toLowerCase().includes(normalizedQuery),
+      )
+    : [];
+
+  const shouldShowSuggestions =
+    isSuggestionOpen &&
+    normalizedQuery.length > 0 &&
+    matchingLocationOptions.length > 0;
 
   // Filter apartments by location and availability
-  const filteredApartments = apartments.filter((apartment) => {
-    // Filter by availability toggle
-    if (showAvailableOnly && !apartment.hasAvailableRooms) {
-      return false;
-    }
-
+  const filteredApartments = searchableApartments.filter((apartment) => {
     // Filter by location search
-    if (!searchQuery.trim()) {
+    if (!normalizedQuery) {
       return true;
     }
+
     const location = apartment.location?.toLowerCase() || "";
-    const query = searchQuery.toLowerCase().trim();
-    return location.includes(query);
+    return location.includes(normalizedQuery);
   });
 
   return (
@@ -51,7 +83,20 @@ const ApartmentSearch = ({ apartments }: ApartmentSearchProps) => {
               type="text"
               placeholder="Search by location..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setIsSuggestionOpen(true);
+              }}
+              onFocus={() => setIsSuggestionOpen(true)}
+              onBlur={() => setIsSuggestionOpen(false)}
+              onKeyDown={(event) => {
+                if (event.key === "Escape") {
+                  setIsSuggestionOpen(false);
+                }
+              }}
+              aria-autocomplete="list"
+              aria-expanded={shouldShowSuggestions}
+              aria-controls="apartment-location-suggestions"
               className="w-full !px-4 !py-3 pl-12 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent outline-none transition-all placeholder:text-gray-500 text-gray-900 text-center"
             />
             <svg
@@ -67,6 +112,29 @@ const ApartmentSearch = ({ apartments }: ApartmentSearchProps) => {
                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
               />
             </svg>
+            {shouldShowSuggestions ? (
+              <div
+                id="apartment-location-suggestions"
+                role="listbox"
+                className="absolute left-0 right-0 top-full z-20 !mt-2 max-h-64 overflow-y-auto rounded-lg border border-gray-200 bg-white shadow-lg"
+              >
+                {matchingLocationOptions.map((location) => (
+                  <button
+                    key={location}
+                    type="button"
+                    role="option"
+                    onMouseDown={(event) => {
+                      event.preventDefault();
+                      setSearchQuery(location);
+                      setIsSuggestionOpen(false);
+                    }}
+                    className="block w-full border-b border-gray-100 !px-4 !py-3 text-center text-sm text-gray-700 transition-colors hover:bg-gray-50 last:border-b-0"
+                  >
+                    {location}
+                  </button>
+                ))}
+              </div>
+            ) : null}
           </div>
           
           {/* Toggle Button */}
@@ -147,4 +215,3 @@ const ApartmentSearch = ({ apartments }: ApartmentSearchProps) => {
 };
 
 export default ApartmentSearch;
-

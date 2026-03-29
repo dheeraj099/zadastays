@@ -1,7 +1,10 @@
+import { unstable_cache } from "next/cache";
+
 const APARTMENTS_DATABASE_ID = process.env.NOTION_APARTMENTS_DATABASE_ID;
 const ROOM_TYPES_DATABASE_ID = process.env.NOTION_ROOM_TYPES_DATABASE_ID;
 const NOTION_TOKEN = process.env.NOTION_TOKEN;
 const NOTION_VERSION = "2022-06-28";
+const NOTION_REVALIDATE_SECONDS = 60;
 
 const slugify = (value) =>
   value
@@ -35,7 +38,7 @@ const ensureEnv = (value, envName) => {
   return value;
 };
 
-const queryDatabase = async (databaseId, body) => {
+const queryDatabasePage = async (databaseId, body) => {
   const token = ensureEnv(NOTION_TOKEN, "NOTION_TOKEN");
   const response = await fetch(
     `https://api.notion.com/v1/databases/${databaseId}/query`,
@@ -47,7 +50,6 @@ const queryDatabase = async (databaseId, body) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(body ?? {}),
-      cache: "no-store",
     },
   );
 
@@ -59,6 +61,23 @@ const queryDatabase = async (databaseId, body) => {
   }
 
   return response.json();
+};
+
+const queryDatabase = async (databaseId, body) => {
+  const results = [];
+  let nextCursor = null;
+
+  do {
+    const response = await queryDatabasePage(databaseId, {
+      ...(body ?? {}),
+      ...(nextCursor ? { start_cursor: nextCursor } : {}),
+    });
+
+    results.push(...(response.results ?? []));
+    nextCursor = response.has_more ? response.next_cursor : null;
+  } while (nextCursor);
+
+  return results;
 };
 
 const normalizeNotionId = (id) => id?.replace(/-/g, "") ?? "";
@@ -90,67 +109,167 @@ const getRelationIds = (properties, preferredKeys) => {
     : [];
 };
 
+const mapApartment = (page) => {
+  if (!page || !("properties" in page)) {
+    return null;
+  }
+
+  const properties = page.properties;
+
+  const name =
+    properties["Apartment_name"]?.type === "title"
+      ? extractText(properties["Apartment_name"].title)
+      : "";
+
+  if (!name) {
+    return null;
+  }
+
+  const location =
+    properties["Location"]?.type === "rich_text"
+      ? extractText(properties["Location"].rich_text)
+      : "";
+
+  const description =
+    properties["Apartment_description"]?.type === "rich_text"
+      ? extractText(properties["Apartment_description"].rich_text)
+      : "";
+
+  const imageFiles =
+    properties["Apartment_image"]?.type === "files"
+      ? properties["Apartment_image"].files
+      : [];
+
+  const imageUrl = extractFileUrl(imageFiles?.[0]);
+  const imageUrls = imageFiles
+    .map((file) => extractFileUrl(file))
+    .filter(Boolean);
+
+  const roomTypeIds = getRelationIds(properties, ["room types"]);
+
+  return {
+    id: normalizeNotionId(page.id),
+    name,
+    slug: slugify(name),
+    location,
+    description,
+    imageUrl,
+    imageUrls,
+    roomTypeIds,
+  };
+};
+
+const mapRoomType = (page) => {
+  if (!page || !("properties" in page)) {
+    return null;
+  }
+
+  const properties = page.properties;
+
+  const name =
+    properties["Name"]?.type === "title"
+      ? extractText(properties["Name"].title)
+      : "";
+
+  if (!name) {
+    return null;
+  }
+
+  const price =
+    properties["Price"]?.type === "number" ? properties["Price"].number : null;
+
+  const apartmentIds = getRelationIds(properties, ["Apartment"]);
+
+  const amenities =
+    properties["Amenities"]?.type === "multi_select"
+      ? properties["Amenities"].multi_select.map((item) => item.name)
+      : [];
+
+  let availability = null;
+  if (properties["Availability"]?.type === "checkbox") {
+    availability = properties["Availability"].checkbox;
+  } else if (properties["Availability"]?.type === "select") {
+    availability = properties["Availability"].select?.name || null;
+  }
+
+  const description =
+    properties["Description"]?.type === "rich_text"
+      ? extractText(properties["Description"].rich_text)
+      : "";
+
+  return {
+    id: page.id,
+    name,
+    price,
+    amenities,
+    availability,
+    description,
+    apartmentIds,
+  };
+};
+
+const getCachedApartments = unstable_cache(
+  async () => {
+    const databaseId = ensureEnv(
+      APARTMENTS_DATABASE_ID,
+      "NOTION_APARTMENTS_DATABASE_ID",
+    );
+
+    const results = await queryDatabase(databaseId, {
+      sorts: [{ timestamp: "last_edited_time", direction: "descending" }],
+    });
+
+    return results.map(mapApartment).filter(Boolean);
+  },
+  ["notion-apartments"],
+  {
+    revalidate: NOTION_REVALIDATE_SECONDS,
+    tags: ["notion-apartments"],
+  },
+);
+
+const getCachedRoomTypes = unstable_cache(
+  async () => {
+    const databaseId = ensureEnv(
+      ROOM_TYPES_DATABASE_ID,
+      "NOTION_ROOM_TYPES_DATABASE_ID",
+    );
+
+    const results = await queryDatabase(databaseId, {
+      sorts: [{ timestamp: "last_edited_time", direction: "descending" }],
+    });
+
+    return results.map(mapRoomType).filter(Boolean);
+  },
+  ["notion-room-types"],
+  {
+    revalidate: NOTION_REVALIDATE_SECONDS,
+    tags: ["notion-room-types"],
+  },
+);
+
 export const fetchApartments = async () => {
-  const databaseId = ensureEnv(
-    APARTMENTS_DATABASE_ID,
-    "NOTION_APARTMENTS_DATABASE_ID",
+  return getCachedApartments();
+};
+
+export const fetchApartmentsWithAvailability = async () => {
+  const [apartments, roomTypes] = await Promise.all([
+    getCachedApartments(),
+    getCachedRoomTypes(),
+  ]);
+
+  const availableApartmentIds = new Set(
+    roomTypes.flatMap((roomType) =>
+      roomType.availability === true || roomType.availability === "yes"
+        ? roomType.apartmentIds
+        : [],
+    ),
   );
 
-  const response = await queryDatabase(databaseId, {
-    sorts: [{ timestamp: "last_edited_time", direction: "descending" }],
-  });
-
-  return response.results
-    .map((page) => {
-      if (!page || !("properties" in page)) {
-        return null;
-      }
-
-      const properties = page.properties;
-
-      const name =
-        properties["Apartment_name"]?.type === "title"
-          ? extractText(properties["Apartment_name"].title)
-          : "";
-
-      if (!name) {
-        return null;
-      }
-
-      const location =
-        properties["Location"]?.type === "rich_text"
-          ? extractText(properties["Location"].rich_text)
-          : "";
-
-      const description =
-        properties["Apartment_description"]?.type === "rich_text"
-          ? extractText(properties["Apartment_description"].rich_text)
-          : "";
-
-      const imageFiles =
-        properties["Apartment_image"]?.type === "files"
-          ? properties["Apartment_image"].files
-          : [];
-
-      const imageUrl = extractFileUrl(imageFiles?.[0]);
-      const imageUrls = imageFiles
-        .map((file) => extractFileUrl(file))
-        .filter(Boolean);
-
-      const roomTypeIds = getRelationIds(properties, ["room types"]);
-
-      return {
-        id: normalizeNotionId(page.id),
-        name,
-        slug: slugify(name),
-        location,
-        description,
-        imageUrl,
-        imageUrls,
-        roomTypeIds,
-      };
-    })
-    .filter(Boolean);
+  return apartments.map((apartment) => ({
+    ...apartment,
+    hasAvailableRooms: availableApartmentIds.has(apartment.id),
+  }));
 };
 
 export const fetchApartmentBySlug = async (slug) => {
@@ -159,70 +278,12 @@ export const fetchApartmentBySlug = async (slug) => {
 };
 
 export const fetchRoomTypesForApartment = async (apartmentId) => {
-  const databaseId = ensureEnv(
-    ROOM_TYPES_DATABASE_ID,
-    "NOTION_ROOM_TYPES_DATABASE_ID",
-  );
+  const normalizedApartmentId = normalizeNotionId(apartmentId);
+  const roomTypes = await getCachedRoomTypes();
 
-  const response = await queryDatabase(databaseId, {
-    sorts: [{ timestamp: "last_edited_time", direction: "descending" }],
-  });
-
-  return response.results
-    .map((page) => {
-      if (!page || !("properties" in page)) {
-        return null;
-      }
-
-      const properties = page.properties;
-
-      const name =
-        properties["Name"]?.type === "title"
-          ? extractText(properties["Name"].title)
-          : "";
-
-      if (!name) {
-        return null;
-      }
-
-      const price =
-        properties["Price"]?.type === "number"
-          ? properties["Price"].number
-          : null;
-
-      const relationIds = getRelationIds(properties, ["Apartment"]);
-
-      if (!relationIds.includes(normalizeNotionId(apartmentId))) {
-        return null;
-      }
-
-      const amenities =
-        properties["Amenities"]?.type === "multi_select"
-          ? properties["Amenities"].multi_select.map((item) => item.name)
-          : [];
-
-      let availability = null;
-      if (properties["Availability"]?.type === "checkbox") {
-        availability = properties["Availability"].checkbox;
-      } else if (properties["Availability"]?.type === "select") {
-        availability = properties["Availability"].select?.name || null;
-      }
-
-      const description =
-        properties["Description"]?.type === "rich_text"
-          ? extractText(properties["Description"].rich_text)
-          : "";
-
-      return {
-        id: page.id,
-        name,
-        price,
-        amenities,
-        availability,
-        description,
-      };
-    })
-    .filter(Boolean);
+  return roomTypes
+    .filter((roomType) => roomType.apartmentIds.includes(normalizedApartmentId))
+    .map(({ apartmentIds, ...roomType }) => roomType);
 };
 
 export const formatCurrency = (value) =>
@@ -233,4 +294,3 @@ export const formatCurrency = (value) =>
         currency: "INR",
         maximumFractionDigits: 0,
       }).format(value);
-
