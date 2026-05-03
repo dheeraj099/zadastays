@@ -26,14 +26,9 @@ const ApartmentDetails = async ({ apartmentSlug }: ApartmentDetailsProps) => {
     notFound();
   }
 
-  const allRoomTypes = (await fetchRoomTypesForApartment(
+  const roomTypes = (await fetchRoomTypesForApartment(
     apartment.id,
   )) as RoomType[];
-
-  // Filter to show only rooms with availability === true or "yes"
-  const roomTypes = allRoomTypes.filter(
-    (room) => room.availability === true || room.availability === "yes"
-  );
 
   return (
     <section className="!py-16 !px-6 lg:!px-8 bg-white flex flex-col  items-center justify-center">
@@ -71,15 +66,26 @@ const ApartmentDetails = async ({ apartmentSlug }: ApartmentDetailsProps) => {
                 className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
               >
                 <div className="!p-6 flex flex-col h-full">
-                  <div className="flex justify-between items-center !mb-4">
+                  <div className="flex justify-between items-start !mb-4">
                     <h3 className="text-2xl font-bold text-gray-900">
                       {room.name}
                     </h3>
-                    {room.price != null ? (
-                      <span className="text-xl font-bold text-gray-900">
-                        {`${formatCurrency(room.price)}/month`}
-                      </span>
-                    ) : null}
+                    <div className="flex flex-col items-end gap-2">
+                      {room.price != null ? (
+                        <span className="text-xl font-bold text-gray-900">
+                          {`${formatCurrency(room.price)}/month`}
+                        </span>
+                      ) : null}
+                      {room.availability === true || room.availability === "yes" ? (
+                        <span className="text-xs font-semibold px-2 py-1 rounded-full bg-green-100 text-green-700">
+                          Available
+                        </span>
+                      ) : (
+                        <span className="text-xs font-semibold px-2 py-1 rounded-full bg-gray-100 text-gray-500">
+                          Not Available
+                        </span>
+                      )}
+                    </div>
                   </div>
 
                   <div className="h-4" />
