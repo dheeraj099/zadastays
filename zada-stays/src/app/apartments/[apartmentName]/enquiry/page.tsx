@@ -14,13 +14,13 @@ interface EnquiryPageProps {
     apartmentName: string;
   }>;
   searchParams: Promise<{
-    roomType?: string;
+    roomTypeId?: string;
   }>;
 }
 
 export default async function EnquiryPage({ params, searchParams }: EnquiryPageProps) {
   const { apartmentName } = await params;
-  const { roomType: selectedRoomTypeName } = await searchParams;
+  const { roomTypeId: selectedRoomTypeId } = await searchParams;
   const apartment = await fetchApartmentBySlug(apartmentName);
 
   if (!apartment) {
@@ -28,12 +28,12 @@ export default async function EnquiryPage({ params, searchParams }: EnquiryPageP
   }
 
   const roomTypes = await fetchRoomTypesForApartment(apartment.id);
-  
-  // Find the selected room type by name, or fall back to the first one
+
+  // Find the selected room type by ID (unique), or fall back to the first one
   let primaryRoomType = roomTypes[0] ?? null;
-  if (selectedRoomTypeName) {
+  if (selectedRoomTypeId) {
     const foundRoomType = roomTypes.find(
-      (rt:any) => rt.name.toLowerCase().trim() === selectedRoomTypeName.toLowerCase().trim()
+      (rt:any) => rt.id === selectedRoomTypeId
     );
     if (foundRoomType) {
       primaryRoomType = foundRoomType;
@@ -50,17 +50,19 @@ export default async function EnquiryPage({ params, searchParams }: EnquiryPageP
   const fallbackImage =
     "https://images.unsplash.com/photo-1507089947368-19c1da9775ae?q=80&w=1200&auto=format&fit=crop";
   
-  // Use imageUrls if available, otherwise fall back to imageUrl, or default
-  let images =
+  // Room type images come first, then apartment images as fallback
+  const roomTypeImages: string[] = (primaryRoomType as any)?.imageUrls ?? [];
+  const apartmentImages: string[] =
     apartment.imageUrls && apartment.imageUrls.length > 0
       ? apartment.imageUrls
       : apartment.imageUrl
       ? [apartment.imageUrl]
-      : [fallbackImage];
-  
-  // Reorder images: start from second image, first image goes to the end
-  if (images.length > 1) {
-    images = [...images.slice(1), images[0]];
+      : [];
+
+  let images: string[] = [...apartmentImages, ...roomTypeImages];
+
+  if (images.length === 0) {
+    images = [fallbackImage];
   }
 
   return (

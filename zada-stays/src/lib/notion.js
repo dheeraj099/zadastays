@@ -197,6 +197,13 @@ const mapRoomType = (page) => {
       ? extractText(properties["Description"].rich_text)
       : "";
 
+  const imageFiles =
+    properties["Files & media"]?.type === "files"
+      ? properties["Files & media"].files
+      : [];
+
+  const imageUrls = imageFiles.map((file) => extractFileUrl(file)).filter(Boolean);
+
   return {
     id: page.id,
     name,
@@ -205,6 +212,7 @@ const mapRoomType = (page) => {
     availability,
     description,
     apartmentIds,
+    imageUrls,
   };
 };
 
