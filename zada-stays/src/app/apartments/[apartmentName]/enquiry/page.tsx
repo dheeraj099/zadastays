@@ -59,7 +59,7 @@ export default async function EnquiryPage({ params, searchParams }: EnquiryPageP
       ? [apartment.imageUrl]
       : [];
 
-  let images: string[] = [...apartmentImages, ...roomTypeImages];
+  let images: string[] = [...roomTypeImages, ...apartmentImages];
 
   if (images.length === 0) {
     images = [fallbackImage];
